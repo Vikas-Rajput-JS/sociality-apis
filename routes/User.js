@@ -21,9 +21,9 @@ const transporter = nodemailer.createTransport({
 });
 
 /* GET home page. */
-router.get("/", async function (req, res, next) {
+router.get("/", async function (req, res) {
   res.render("index", { title: "Express" });
-  
+
 });
 router.post(
   "/adduser",
@@ -49,8 +49,6 @@ router.post(
     }
     try {
       if (!FindUser) {
-
-
         const Salt = await bcrypt.genSalt(10);
         const GenPass = await bcrypt.hash(password, Salt);
         const AddUser = await User.create({
@@ -62,20 +60,19 @@ router.post(
 
         const SendMail = async () => {
           const info = await transporter.sendMail({
-            from: 'vr384695@gmail.com', // sender address
+            from: "vr384695@gmail.com", // sender address
             to: email, // list of receivers
             subject: "Welcome to NodeTut", // Subject line
             text: "Thanks to Be a part of Developer's Zone", // plain text body
             html: "<b>Hello world?</b>", // html body
           });
-        }
+        };
 
         if (AddUser) {
-          SendMail()
+          SendMail();
           res
             .status(200)
             .send({ status: 200, message: "User added successfully" });
-
         }
       }
     } catch (error) {
@@ -88,38 +85,34 @@ router.post(
   "/login",
   [body("email").isEmail(), body("password").isLength(8)],
   async (req, res) => {
-    let Result = validationResult(req)
+    let Result = validationResult(req);
     if (!Result.isEmpty()) {
-      res.status(400).send({ message: Result.errors[0], success: false })
+      res.status(400).send({ message: Result.errors[0], success: false });
     }
     const { email, password } = req.body;
     try {
-      console.log(req.body)
+      console.log(req.body);
       let FindUser = await User.findOne({ email: email });
       if (!FindUser) {
         res
           .status(400)
           .send({ status: 400, message: "User not found", success: false });
       }
-      console.log(FindUser)
+      console.log(FindUser);
       let Compare = await bcrypt.compare(password, FindUser.password);
-      console.log(Compare, password)
+      console.log(Compare, password);
       if (!Compare) {
-        res
-          .status(400)
-          .send({
-            message: "Password is incorrect",
-            status: 400,
-            success: false,
-          });
+        res.status(400).send({
+          message: "Password is incorrect",
+          status: 400,
+          success: false,
+        });
       }
 
       const data = {
-
         FindUser: {
-          id: FindUser.id
-        }
-
+          id: FindUser.id,
+        },
       };
       const SendMail = async () => {
         const info = await transporter.sendMail({
@@ -129,45 +122,76 @@ router.post(
           text: "You have been logged in just a moment ago in Developer's Zone", // plain text body
           html: {}, // html body
         });
-      }
-      const token = jwt.sign(data, SECRET_KEY)
+      };
+      const token = jwt.sign(data, SECRET_KEY);
 
-      res.status(200).send({ token: token })
-      SendMail()
-
+      res.status(200).send({ token: token });
+      //  SendMail();
     } catch (error) {
-      res.status(400).send({ message: error })
+      res.status(400).send({ message: error });
     }
   }
 );
 
-
-
-
-router.get('/getUser', VerifyUser, async (req, res) => {
-
-
+router.get("/getUser", VerifyUser, async (req, res) => {
   let count = parseInt(req.query.count) || 2;
 
   let page = parseInt(req.query.page) || 1;
-  let search = req.query.search || '';
- let sortBy = req.query.sortBy
+  let search = req.query.search || "";
+  let sortBy = req.query.sortBy;
 
- let key = sortBy?.split(" ")[0]
-console.log(key)
-  const getusers = await User.find({ name: { $regex: search }, email: { $regex: search } }).limit(count).skip((page - 1) * count).sort({ name: -1 })
+  let key = sortBy?.split(" ")[0];
+  console.log(key);
+  const getusers = await User.find({
+    name: { $regex: search },
+  })
+    .limit(count)
+    .skip((page - 1) * count)
+    .set({
+      createdAt:new Date()
+    })
+    // .sort({ name: 1 });
 
-  res.send({ data: getusers, success: true, code: 200, total: getusers.length, page, page })
-})
-
-
-
-
-router.get("/welcome", async function (req, res, next) {
-  res.render("index", { title: "Developer's Zone" });
-  
-
+ 
+console.log(result)
+  res.send({
+    data: getusers,
+    success: true,
+    code: 200,
+    total: getusers.length,
+    page,
+    page,
+  });
 });
 
+
+router.post('/forgot-password',async(req,res)=>{
+  try {
+    const {email} = req.body;
+    let find = await User.findOne({email})
+    if(!find){
+      res.status(400).send({code:400,message:"User not found",success:false})
+    }
+    const otp = Math.floor(10000*9000)
+    const SendMail = async () => {
+      const info = await transporter.sendMail({
+        from: '"Developer"s Zone" vr384695@gmail.com', // sender address
+        to: email, // list of receivers
+        subject: "Welcome to NodeTut", // Subject line
+        text: "You may forgot your password in Developer's Zone", // plain text body
+        html: `<b>Hello world?
+        <h1>${otp}</h1></b>`, // html body
+      });
+    };
+
+
+  } catch (error) {
+    
+  }
+})
+
+router.get("/welcome", async function (req, res) {
+  res.render("index", { title: "Developer's Zone" });
+});
 
 module.exports = router;
