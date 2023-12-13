@@ -166,8 +166,8 @@ console.log(key)
 
 router.get("/welcome", async function (req, res, next) {
   res.render("index", { title: "Developer's Zone" });
-  const user = await User.find({});
-  console.log(user);
+  
+
 });
 
 
