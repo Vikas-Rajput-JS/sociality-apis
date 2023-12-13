@@ -23,8 +23,7 @@ const transporter = nodemailer.createTransport({
 /* GET home page. */
 router.get("/", async function (req, res, next) {
   res.render("index", { title: "Express" });
-  const user = await User.find({});
-  console.log(user);
+  
 });
 router.post(
   "/adduser",
