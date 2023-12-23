@@ -4,7 +4,7 @@ const Router = require('express').Router()
 const { body, validationResult } = require("express-validator");
 
 
-Router.post('/create-post',[
+Router.post('/create-post',VerifyUser,[
 body('caption').isLength(5),
 body('user_id').isLength(6),
 body('image').isURL()
@@ -28,7 +28,7 @@ body('image').isURL()
         console.log(error)
     }
 })
-Router.get('/allposts',async(req,res)=>{
+Router.get('/allposts',VerifyUser,async(req,res)=>{
     try {
         const Getposts = await Posts.find({})
         if(!Getposts){
@@ -39,7 +39,7 @@ Router.get('/allposts',async(req,res)=>{
         console.log(error)
     }
 })
-Router.delete('/posts',async(req,res)=>{
+Router.delete('/posts',VerifyUser,async(req,res)=>{
     let {id} = req.query;
     console.log(id)
     try {

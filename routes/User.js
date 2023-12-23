@@ -142,7 +142,7 @@ router.post(
           },
         };
 
-        const token = jwt.sign(data, SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign(data, SECRET_KEY, { expiresIn: "120" });
 
         res
           .status(200)
