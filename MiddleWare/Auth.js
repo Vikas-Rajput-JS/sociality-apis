@@ -9,10 +9,15 @@ const VerifyUser = (req, res, next) => {
     }
     try {
         const VerifyToken = jwt.verify(token, SECRET_KEY)
+      
+       
         req.user = VerifyToken.user
         next()
     } catch (error) {
-        console.log(error)
+        if(error.expiredAt){
+            res.status(401).send({code:500,status:false,message:"Your session is Expired."})
+        }
+      
         res.status(501).json({error:"Please Login Using Valid Auth Token"})
     }
 
