@@ -8,6 +8,7 @@ const UserSchema = mongoose.Schema({
   bio: { type: String },
   username: { type: String },
   image: { type: String },
+  bannerImage:{type:String},
 });
 UserSchema.set("toJSON", {
   virtuals: true,
