@@ -35,7 +35,7 @@ router.post(
   async (req, res) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-      res.status(400).send({ message: error.errors[0] });
+      res.status(400).send({ message: error.errors[0],success:false,code:400 });
     }
     const { email, name, city, password } = req.body;
     let FindUser = await User.findOne({ email: email });
