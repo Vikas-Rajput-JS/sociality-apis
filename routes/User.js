@@ -331,12 +331,20 @@ router.get("/profile", VerifyUser, async (req, res) => {
   console.log(userId, "================");
   try {
     const FindUser = await User.findById(userId).select("-password");
+    User.find({ _id: { $in: FindUser.followers } })
+    .populate('followers').select(['-password','-followings']) // Populate the 'followers' field (optional)
+    .exec()
+    .then(users => {
+      // Here, the 'users' array will contain the populated documents
+      console.log(users,"==================users");
+      res.status(200).send({data:FindUser,followers:users,success:true,code:200})
+    })
     if (!FindUser) {
       res
         .status(400)
         .send({ success: false, message: "User Not Found", code: 400 });
     }
-    res.status(200).send({ success: true, code: 200, data: FindUser });
+    // res.status(200).send({ success: true, code: 200, data: FindUser });
   } catch (error) {
     console.log(error);
   }

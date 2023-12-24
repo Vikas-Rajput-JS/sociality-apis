@@ -4,8 +4,9 @@ const PostSchema = mongoose.Schema({
     image:{type:String,required:true,unique:true},
 caption:{type:String,required:true},
 isLike:{type:Boolean,default:false},
-user_id:{type:String,required:true},
-createdAt:{type:Date,default:Date.now}
+user_id:{type:mongoose.Schema.Types.ObjectId,ref:'users',required:true},
+createdAt:{type:Date,default:Date.now},
+
 })
 PostSchema.set("toJSON", {   virtuals: true,   versionKey: false,   transform: function(doc, ret) {     delete ret._id;   } }); 
 const Model = mongoose.model('posts',PostSchema)

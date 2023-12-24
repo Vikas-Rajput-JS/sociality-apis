@@ -2,7 +2,7 @@ const Posts = require('../Model/Post')
 const VerifyUser = require('../MiddleWare/Auth')
 const Router = require('express').Router()
 const { body, validationResult } = require("express-validator");
-
+const User = require*'../Model/User.js'
 
 Router.post('/create-post',VerifyUser,[
 body('caption').isLength(5),
@@ -31,6 +31,8 @@ body('image').isURL()
 Router.get('/allposts',VerifyUser,async(req,res)=>{
     try {
         const Getposts = await Posts.find({})
+        const arr = ['65871985094b21c8745d8b11','6587c530c2b941d0c22b293f','6587181db16cd1afefce178f',]
+      
         if(!Getposts){
             res.status(400).send({message:"Posts not found",success:false,code:400})
         }
