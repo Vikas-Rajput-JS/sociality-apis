@@ -104,7 +104,7 @@ router.post(
       if (!FindUser) {
         res
           .status(400)
-          .json({ status: 400, message: "User not found", success: false });
+          .json({ status: 400, message: "Email does not exists in Our System!", success: false });
       }
       console.log(FindUser);
       let Compare = await bcrypt.compare(password, FindUser.password);
