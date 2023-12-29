@@ -126,7 +126,7 @@ router.post(
           });
         };
 
-        SendMail();
+        // SendMail();
       } else {
         await transporter.sendMail({
           from: '"Developer"s Zone" vr384695@gmail.com', // sender address
