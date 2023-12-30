@@ -8,6 +8,7 @@ let usersRouter = require('./routes/User')
 const PostRouter = require('./routes/Posts')
 const FollowRouter = require('./routes/Follows')
 const AdminRouter = require('./routes/Admin')
+const PlanRouter = require('./routes/Plans')
 const cors = require('cors')
 var app = express();
 
@@ -26,6 +27,7 @@ app.use('/', usersRouter);
 app.use('/posts/', PostRouter);
 app.use('/', FollowRouter);
 app.use('/admin/', AdminRouter);
+app.use('/subscriptions/', PlanRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
