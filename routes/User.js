@@ -73,7 +73,7 @@ router.post(
             .status(200)
             .send({
               status: 200,
-              message: "User added successfully",
+              message: "Account Created successfully!",
               success: true,
             });
         }
@@ -142,7 +142,7 @@ router.post(
           },
         };
 
-        const token = jwt.sign(data, SECRET_KEY, { expiresIn: "5h" });
+        const token = jwt.sign(data, SECRET_KEY, { expiresIn: "1h" });
 
         res
           .status(200)
@@ -162,7 +162,7 @@ router.post(
 
 router.get("/getUser", VerifyUser, async (req, res) => {
   let count = parseInt(req.query.count) || 2;
-
+console.log(req.headers.authorization)
   let page = parseInt(req.query.page) || 1;
   let search = req.query.search || "";
   let sortBy = req.query.sortBy;

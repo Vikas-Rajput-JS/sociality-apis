@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 
-let connect= mongoose.connect('mongodb+srv://nasib001bhatt1984:723433723433@cluster0.7g1wkc8.mongodb.net/Sociality')
+// let connect= mongoose.connect('mongodb+srv://nasib001bhatt1984:723433723433@cluster0.7g1wkc8.mongodb.net/Sociality')
 
-
-
+let connect = mongoose.connect('mongodb://localhost:27017/MetaVerse')
+if(connect){
+    console.log('Database is Connected Successfully...')
+}
 // const { MongoClient, ServerApiVersion } = require('mongodb');
 // const uri = "mongodb+srv://nasib001bhatt1984:723433723433@cluster0.7g1wkc8.mongodb.net/Sociality";
 
