@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
   auth: {
     // TODO: replace `user` and `pass` values from <https://forwardemail.net>
     user: "vr384695@gmail.com",
-    pass: "pxbuudrsodvacyex",
+    pass: "ggxtkxwbtylkzcak",
   },
 });
 
@@ -35,7 +35,9 @@ router.post(
   async (req, res) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-      res.status(400).send({ message: error.errors[0],success:false,code:400 });
+      res
+        .status(400)
+        .send({ message: error.errors[0], success: false, code: 400 });
     }
     const { email, name, city, password } = req.body;
     let FindUser = await User.findOne({ email: email });
@@ -69,13 +71,11 @@ router.post(
 
         if (AddUser) {
           SendMail();
-          res
-            .status(200)
-            .send({
-              status: 200,
-              message: "Account Created successfully!",
-              success: true,
-            });
+          res.status(200).send({
+            status: 200,
+            message: "User added successfully",
+            success: true,
+          });
         }
       }
     } catch (error) {
@@ -90,12 +90,13 @@ router.post(
   async (req, res) => {
     let Result = validationResult(req);
     if (!Result.isEmpty()) {
-      res
-        .status(400)
-        .json({
-          message: Result?.errors[0].path=='password'?"Please enter valid password":Result?.errors[0].msg + " " + Result?.errors[0].path,
-          success: false,
-        });
+      res.status(400).json({
+        message:
+          Result?.errors[0].path == "password"
+            ? "Please enter valid password"
+            : Result?.errors[0].msg + " " + Result?.errors[0].path,
+        success: false,
+      });
     }
     const { email, password } = req.body;
     try {
@@ -104,7 +105,11 @@ router.post(
       if (!FindUser) {
         res
           .status(400)
-          .json({ status: 400, message: "Email does not exists in Our System!", success: false });
+          .json({
+            status: 400,
+            message: "Email does not exists in Our System!",
+            success: false,
+          });
       }
       console.log(FindUser);
       let Compare = await bcrypt.compare(password, FindUser.password);
@@ -126,7 +131,7 @@ router.post(
           });
         };
 
-        SendMail();
+        // SendMail();
       } else {
         await transporter.sendMail({
           from: '"Developer"s Zone" vr384695@gmail.com', // sender address
@@ -144,18 +149,16 @@ router.post(
 
         const token = jwt.sign(data, SECRET_KEY, { expiresIn: "1h" });
 
-        res
-          .status(200)
-          .send({
-            token: token,
-            success: true,
-            code: 200,
-            message: "Login successfully",
-          });
+        res.status(200).send({
+          token: token,
+          success: true,
+          code: 200,
+          message: "Login successfully",
+        });
       }
     } catch (error) {
-      console.log(error)
-      // res.status(400).json({ message: error });  
+      console.log(error);
+      // res.status(400).json({ message: error });
     }
   }
 );
@@ -164,21 +167,35 @@ router.get("/getUser", VerifyUser, async (req, res) => {
   let count = parseInt(req.query.count) || 2;
 console.log(req.headers.authorization)
   let page = parseInt(req.query.page) || 1;
-  let search = req.query.search || "";
-  let sortBy = req.query.sortBy;
 
+  let sortBy = req.query.sortBy;
+  let filter = req.query;
+  let where = {};
+  let SortObj = {}
+  console.log(filter);
+  if (filter.name) {
+    where.name = { $regex: filter.name, $options: "i" };
+  }
+  if (filter.email) {
+    where.email = { $regex: filter.email, $options: "i" };
+  }
+  if (filter.city) {
+    where.city = { $regex: filter.city, $options: "i" };
+  }
   let key = sortBy?.split(" ")[0];
   console.log(key);
-  const getUsers = await User.find({});
-  // const getusers = await User.find({
-  //   name: { $regex: search },
-  // })
-  //   .limit(count)
-  //   .skip((page - 1) * count)
-  //   .set({
-  //     createdAt: new Date(),
-  //   }).exc('-password')
-  // .sort({ name: 1 });
+
+  if(key){
+    SortObj[key] = parseInt(sortBy.split(' ')[1])
+  }
+  const getUsers = await User.find(where)
+
+    .limit(count)
+    .skip((page - 1) * count)
+
+    .sort(SortObj)
+    .select("-password");
+ 
 
   res.send({
     data: getUsers,
@@ -282,13 +299,11 @@ router.post("/verify-otp", async (req, res) => {
         .status(400)
         .send({ code: 400, message: "The OTP is not valid", success: false });
     }
-    res
-      .status(200)
-      .send({
-        code: 200,
-        success: true,
-        message: "OTP verified Successfully!",
-      });
+    res.status(200).send({
+      code: 200,
+      success: true,
+      message: "OTP verified Successfully!",
+    });
   } catch (error) {
     console.log(error);
     res.status(400).send({ code: 400, message: error, success: false });
@@ -313,13 +328,11 @@ router.post("/reset-password", async (req, res) => {
       { $set: { password: GenPass } }
     );
     if (UpdatePassword) {
-      res
-        .status(200)
-        .send({
-          code: 200,
-          success: true,
-          message: "Password reset successfully",
-        });
+      res.status(200).send({
+        code: 200,
+        success: true,
+        message: "Password reset successfully",
+      });
     }
   } catch (error) {}
 });
@@ -332,13 +345,16 @@ router.get("/profile", VerifyUser, async (req, res) => {
   try {
     const FindUser = await User.findById(userId).select("-password");
     User.find({ _id: { $in: FindUser.followers } })
-    .populate('followers').select(['-password','-followings']) // Populate the 'followers' field (optional)
-    .exec()
-    .then(users => {
-      // Here, the 'users' array will contain the populated documents
-      console.log(users,"==================users");
-      res.status(200).send({data:FindUser,followers:users,success:true,code:200})
-    })
+      .populate("followers")
+      .select(["-password", "-followings"]) // Populate the 'followers' field (optional)
+      .exec()
+      .then((users) => {
+        // Here, the 'users' array will contain the populated documents
+        console.log(users, "==================users");
+        res
+          .status(200)
+          .send({ data: FindUser, followers: users, success: true, code: 200 });
+      });
     if (!FindUser) {
       res
         .status(400)
@@ -362,10 +378,18 @@ router.put("/profile", VerifyUser, async (req, res) => {
         .status(400)
         .send({ success: false, message: "User Not Found", code: 400 });
     }
-    const UpdateUser = await User.updateOne({_id:userId},{$set:req.body})
+    const UpdateUser = await User.updateOne(
+      { _id: userId },
+      { $set: req.body }
+    );
     if (UpdateUser) {
-     
-      res.status(200).send({ success: true, code: 200,message:"Profile updated successfully" });
+      res
+        .status(200)
+        .send({
+          success: true,
+          code: 200,
+          message: "Profile updated successfully",
+        });
     }
   } catch (error) {
     console.log(error);
