@@ -21,17 +21,18 @@ try {
     let {email,password} = req.body;
     let all = await Admin.find({})
     console.log(all)
-    const Salt = await bcrypt.genSalt(10);
-    const GenPass = await bcrypt.hash(password, Salt);
-    console.log(GenPass,'=============')
+    // const Salt = await bcrypt.genSalt(10);
+    // const GenPass = await bcrypt.hash(password, Salt);
+    // console.log(GenPass,'=============')
     let findAdmin = await Admin.findOne({email})
     if(!findAdmin){
         res.status(400).send({message:"Email Does not exists",success:false,code:400})
     }
     
   
-    let Compare = await bcrypt.compare(password, findAdmin.password);
-    if(!Compare){
+    // let Compare = await bcrypt.compare(password, findAdmin.password);
+    
+    if(password!==findAdmin.password){
         res.status(400).send({message:"Password is Incorrect",success:true,code:400})
     }
     const data = {
