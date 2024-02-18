@@ -1496,10 +1496,11 @@ router.post("/verify-otp", async (req, res) => {
 router.post("/reset-password", async (req, res) => {
   const { newPassword, email } = req.body;
   const token = req.header("Auth");
-  const decoded = jwt.verify(token, SECRET_KEY);
-  var userId = decoded?.FindUser?.id;
+  // const decoded = jwt.verify(token, SECRET_KEY);
+  // var userId = decoded?.FindUser?.id;
   try {
-    const FindUser = await User.findOne({ _id:userId });
+    const FindUser = await User.findOne({ email });
+    
     if (!FindUser) {
       res
         .status(400)
@@ -1509,7 +1510,7 @@ router.post("/reset-password", async (req, res) => {
     const Salt = await bcrypt.genSalt(10);
     const GenPass = await bcrypt.hash(newPassword, Salt);
     const UpdatePassword = await User.updateOne(
-      { _id: userId },
+      { email:email },
       { $set: { password: GenPass } }
     );
     if (UpdatePassword) {
