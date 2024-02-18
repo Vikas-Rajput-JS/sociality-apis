@@ -17,7 +17,7 @@ body('image').isURL()
     let {caption ,image,user_id,name} = req.body;
     try {
         const AddPost = await Posts.create({
-            name:name,caption:caption,user_id:user_id,image:image
+            name:name,caption:caption,addedBy:user_id,image:image
         })
         await AddPost.save()
         if(AddPost){
@@ -30,7 +30,7 @@ body('image').isURL()
 })
 Router.get('/allposts',VerifyUser,async(req,res)=>{
     try {
-        const Getposts = await Posts.find({})
+        const Getposts = await Posts.find({}).populate('addedBy')
         const arr = ['65871985094b21c8745d8b11','6587c530c2b941d0c22b293f','6587181db16cd1afefce178f',]
       
         if(!Getposts){
