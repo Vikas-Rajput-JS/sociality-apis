@@ -13,7 +13,7 @@ required:true
     createdAt:{
         type:Date,
         default:Date.now,
-        expires:60*1,
+        expires:"10m",
     }   
 })
 

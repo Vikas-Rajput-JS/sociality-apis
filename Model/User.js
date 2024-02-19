@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const UserSchema = mongoose.Schema({
-  name: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String},
   email: { type: String, required: true, unique: true },
   city: { type: String, default: "Hisar" },
   password: { type: String, required: true },
@@ -9,7 +10,13 @@ const UserSchema = mongoose.Schema({
   // username: { type: String },
   image: { type: String },
   bannerImage:{type:String},
+<<<<<<< HEAD
   createdAt:{type:Date,default:Date.now}
+=======
+  address:{type:String},
+  gender:{type:String},
+  status:{type:String,default:'active'}
+>>>>>>> 4f1908c937f89d2498392c108231b9f7e9bc2ef3
 
 });
 UserSchema.set("toJSON", {
