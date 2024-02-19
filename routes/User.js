@@ -11,7 +11,7 @@ const ApiVideoClient = require('@api.video/nodejs-client');
 const API_VIDEO_KEY = 'QM3WPsTsTzdRC8bZPKVOYMWAbSukMXqyJlivqdqYYwE'
 const OtpModel = require("../Model/Otp");
 const PostModel = require('../Model/Post')
-const  axios  = require("axios");
+const axios = require("axios");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
@@ -24,34 +24,36 @@ const transporter = nodemailer.createTransport({
 });
 
 /* GET home page. */
-const Login = ()=>{
-  axios.post('http://localhost:5000/login',{email:"flowerry.xo@yopmail.com",password:"123456789"}).then((res)=>{
+const Login = () => {
+  axios.post('http://localhost:5000/login', { email: "flowerry.xo@yopmail.com", password: "123456789" }).then((res) => {
     console.log(res)
   })
 }
-const GetAllUsers = ()=>{
-  axios.get('http://localhost:5000/getUser?count=9&page=1&name=&sortBy=email 1',{
-    headers:{Auth:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE'},
-    
-  }).then((res)=>{
+const GetAllUsers = () => {
+  axios.get('http://localhost:5000/getUser?count=9&page=1&name=&sortBy=email 1', {
+    headers: { Auth: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE' },
+
+  }).then((res) => {
     console.log(res?.data)
   })
 }
 
-const GetAllPost = ()=>{
-  axios.get('http://localhost:5000/allposts',{
-    headers:{Auth:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE'}
-  }).then((res)=>{
+const GetAllPost = () => {
+  axios.get('http://localhost:5000/allposts', {
+    headers: { Auth: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE' }
+  }).then((res) => {
     console.log(res?.data?.data[0])
   })
 }
 
-const StartFollow = ()=>{
-  axios.put('htpp://localhost:5000/follow',{body:{
-    followId:"6593b14e019c6976f9241218"
-  },header:{
-    Auth:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE"
-  }}).then((res)=>{
+const StartFollow = () => {
+  axios.put('htpp://localhost:5000/follow', {
+    body: {
+      followId: "6593b14e019c6976f9241218"
+    }, header: {
+      Auth: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE"
+    }
+  }).then((res) => {
     console.log(res)
   })
 }
@@ -59,7 +61,7 @@ const StartFollow = ()=>{
 GetAllUsers()
 // StartFollow()
 // GetAllPost()
-router.get("/", async function (req, res) {   
+router.get("/", async function (req, res) {
   res.render("index", { title: "Express" });
 });
 router.post(
@@ -662,8 +664,8 @@ router.post(
         }
       }
     } catch (error) {
-  console.log({ err: error });
-}
+      console.log({ err: error });
+    }
   }
 );
 // Add User For Admin
@@ -685,7 +687,7 @@ router.post(
         .status(400)
         .send({ message: error.errors[0], success: false, code: 400 });
     }
-    const { email, name, address, gender, lastName, firstName,image } = req.body;
+    const { email, name, address, gender, lastName, firstName, image } = req.body;
     let FindUser = await User.findOne({ email: email });
     console.log(FindUser);
     if (FindUser) {
@@ -713,7 +715,7 @@ router.post(
           address: address,
           gender: gender,
           password: GenPass,
-          image:image
+          image: image
           // city: city,
         });
 
@@ -1513,12 +1515,12 @@ router.post("/verify-otp", async (req, res) => {
     const GetOtp = await OtpModel.findOne({ email })
       .sort({ createdAt: -1 })
       .limit(1);
-console.log(GetOtp,'============================')
-    if (GetOtp==null || otp != GetOtp?.otp) {
-       res
+    console.log(GetOtp, '============================')
+    if (GetOtp == null || otp != GetOtp?.otp) {
+      res
         .status(400)
         .send({ code: 400, message: "The OTP is not valid", success: false });
-    }else{
+    } else {
 
       res.status(200).send({
         code: 200,
@@ -1527,7 +1529,7 @@ console.log(GetOtp,'============================')
       });
     }
   } catch (error) {
-    console.log('=================================>',error);
+    console.log('=================================>', error);
     res.status(400).send({ code: 400, message: error, success: false });
   }
 });
@@ -1539,7 +1541,7 @@ router.post("/reset-password", async (req, res) => {
   // var userId = decoded?.FindUser?.id;
   try {
     const FindUser = await User.findOne({ email });
-    
+
     if (!FindUser) {
       res
         .status(400)
@@ -1549,7 +1551,7 @@ router.post("/reset-password", async (req, res) => {
     const Salt = await bcrypt.genSalt(10);
     const GenPass = await bcrypt.hash(newPassword, Salt);
     const UpdatePassword = await User.updateOne(
-      { email:email },
+      { email: email },
       { $set: { password: GenPass } }
     );
     if (UpdatePassword) {
@@ -1566,7 +1568,7 @@ router.get("/profile", VerifyUser, async (req, res) => {
   const token = req.header("Auth");
   const decoded = jwt.verify(token, SECRET_KEY);
   var userId = decoded?.FindUser?.id;
-  
+
   console.log(userId, "================");
   try {
     const FindUser = await User.findById(userId).select("-password");
@@ -1582,7 +1584,7 @@ router.get("/profile", VerifyUser, async (req, res) => {
           .send({ data: FindUser, followers: users, success: true, code: 200 });
       });
 
-   
+
     if (!FindUser) {
       res
         .status(400)
@@ -1594,7 +1596,7 @@ router.get("/profile", VerifyUser, async (req, res) => {
   }
 });
 
-router.put('/admin/user',VerifyUser,async(req,res)=>{
+router.put('/admin/user', VerifyUser, async (req, res) => {
   try {
     let { id } = req.body;
     let FindUser = await User.findById(id);
@@ -1605,11 +1607,11 @@ router.put('/admin/user',VerifyUser,async(req,res)=>{
     }
 
     let UpdateUser = await User.updateOne({
-      _id:id
+      _id: id
     },
-    {
-      $set:req.body
-    })
+      {
+        $set: req.body
+      })
     if (UpdateUser) {
       res.status(200).send({
         success: true,
@@ -1653,9 +1655,9 @@ router.put("/profile", VerifyUser, async (req, res) => {
 });
 
 
-router.delete('/user',VerifyUser,async(req,res)=>{
+router.delete('/user', VerifyUser, async (req, res) => {
   try {
-    const {id }  = req.query
+    const { id } = req.query
     const FindUser = await User.findById(id);
     if (!FindUser) {
       res
@@ -1663,8 +1665,8 @@ router.delete('/user',VerifyUser,async(req,res)=>{
         .send({ success: false, message: "User Not Found", code: 400 });
     }
 
-    let DeletUser = await User.deleteOne({_id:id})
-    if(!DeletUser){
+    let DeletUser = await User.deleteOne({ _id: id })
+    if (!DeletUser) {
       res.send({ success: false, message: "Something went wrong", code: 400 });
 
     }
