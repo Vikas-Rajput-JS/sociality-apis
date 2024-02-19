@@ -30,8 +30,8 @@ body('image').isURL()
 })
 Router.get('/allposts',VerifyUser,async(req,res)=>{
     try {
-        const Getposts = await Posts.find({})
-        const arr = ['65871985094b21c8745d8b11','6587c530c2b941d0c22b293f','6587181db16cd1afefce178f',]
+        const Getposts = await Posts.find({}).populate("user_id").select('-password')
+        // const arr = ['65871985094b21c8745d8b11','6587c530c2b941d0c22b293f','6587181db16cd1afefce178f',]
       
         if(!Getposts){
             res.status(400).send({message:"Posts not found",success:false,code:400})

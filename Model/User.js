@@ -9,6 +9,7 @@ const UserSchema = mongoose.Schema({
   // username: { type: String },
   image: { type: String },
   bannerImage:{type:String},
+  createdAt:{type:Date,default:Date.now}
 
 });
 UserSchema.set("toJSON", {

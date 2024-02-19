@@ -31,13 +31,14 @@ Router.post("/plans", async (req, res) => {
       .status(200)
       .send({ code: 200, success: true, message: "Plan added successfuly !" });
   } catch (error) {
+    
     console.log(error);
   }
 });
 
 Router.get("/plans", VerifyUser, async (req, res) => {
   try {
-    let GetPlans = await Plans.find({});
+    let GetPlans = await Plans.find({}).sort({price:1});
 
     if (!GetPlans) {
       res

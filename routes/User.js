@@ -8,20 +8,56 @@ const VerifyUser = require("../MiddleWare/Auth");
 const SECRET_KEY = "8678295@Vikas.Nikk$70561";
 const nodemailer = require("nodemailer");
 const OtpModel = require("../Model/Otp");
+const PostModel = require('../Model/Post')
+const  axios  = require("axios");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
   requireTLS: true,
   auth: {
-    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
     user: "vr384695@gmail.com",
     pass: "ggxtkxwbtylkzcak",
   },
 });
 
 /* GET home page. */
-router.get("/", async function (req, res) {
+const Login = ()=>{
+  axios.post('http://localhost:5000/login',{email:"flowerry.xo@yopmail.com",password:"123456789"}).then((res)=>{
+    console.log(res)
+  })
+}
+const GetAllUsers = ()=>{
+  axios.get('http://localhost:5000/getUser?count=9&page=1&name=&sortBy=email 1',{
+    headers:{Auth:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE'},
+    
+  }).then((res)=>{
+    console.log(res?.data)
+  })
+}
+
+const GetAllPost = ()=>{
+  axios.get('http://localhost:5000/allposts',{
+    headers:{Auth:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE'}
+  }).then((res)=>{
+    console.log(res?.data?.data[0])
+  })
+}
+
+const StartFollow = ()=>{
+  axios.put('htpp://localhost:5000/follow',{body:{
+    followId:"6593b14e019c6976f9241218"
+  },header:{
+    Auth:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE"
+  }}).then((res)=>{
+    console.log(res)
+  })
+}
+// Login()
+GetAllUsers()
+// StartFollow()
+// GetAllPost()
+router.get("/", async function (req, res) {   
   res.render("index", { title: "Express" });
 });
 router.post(
@@ -65,22 +101,22 @@ router.post(
             to: email, // list of receivers
             subject: "Welcome to NodeTut", // Subject line
             text: "Thanks to Be a part of Developer's Zone", // plain text body
-            html: "<b>Hello world?</b>", // html body
-          });
+            html: " ", // html body
+      });
         };
 
-        if (AddUser) {
-          SendMail();
-          res.status(200).send({
-            status: 200,
-            message: "User added successfully",
-            success: true,
-          });
-        }
+if (AddUser) {
+  SendMail();
+  res.status(200).send({
+    status: 200,
+    message: "User added successfully",
+    success: true,
+  });
+}
       }
     } catch (error) {
-      console.log({ err: error });
-    }
+  console.log({ err: error });
+}
   }
 );
 
@@ -133,13 +169,13 @@ router.post(
 
         // SendMail();
       } else {
-        await transporter.sendMail({
-          from: '"Developer"s Zone" vr384695@gmail.com', // sender address
-          to: email, // list of receivers
-          subject: "Welcome to NodeTut", // Subject line
-          text: "You have been logged in just a moment ago in Developer's Zone", // plain text body
-          html: `<p>Welcome Back Dear ${email}</p>`, // html body
-        });
+        // await transporter.sendMail({
+        //   from: '"Developer"s Zone" vr384695@gmail.com', // sender address
+        //   to: email, // list of receivers
+        //   subject: "Welcome to NodeTut", // Subject line
+        //   text: "You have been logged in just a moment ago in Developer's Zone", // plain text body
+        //   html: `<p>Welcome Back Dear ${email}</p>`, // html body
+        // });
 
         const data = {
           FindUser: {
@@ -165,14 +201,17 @@ router.post(
 
 router.get("/getUser", VerifyUser, async (req, res) => {
   let count = parseInt(req.query.count) || 2;
-console.log(req.headers.authorization)
+  console.log(req.headers.authorization)
   let page = parseInt(req.query.page) || 1;
 
   let sortBy = req.query.sortBy;
   let filter = req.query;
   let where = {};
   let SortObj = {}
+  let total = await User.find({}).count()
   console.log(filter);
+
+
   if (filter.name) {
     where.name = { $regex: filter.name, $options: "i" };
   }
@@ -182,11 +221,16 @@ console.log(req.headers.authorization)
   if (filter.city) {
     where.city = { $regex: filter.city, $options: "i" };
   }
+
   let key = sortBy?.split(" ")[0];
   console.log(key);
 
-  if(key){
-    SortObj[key] = parseInt(sortBy.split(' ')[1])
+  if (key) {
+    SortObj[key] = parseInt(sortBy.split(' ')[1]) || 1;
+  }
+  if (SortObj[key] > 1) {
+    SortObj[key] = 1;
+
   }
   const getUsers = await User.find(where)
 
@@ -195,13 +239,13 @@ console.log(req.headers.authorization)
 
     .sort(SortObj)
     .select("-password");
- 
+
 
   res.send({
     data: getUsers,
     success: true,
     code: 200,
-    total: getUsers.length,
+    total: total,
     page,
     page,
   });
@@ -257,11 +301,11 @@ router.post("/forgot-password", async (req, res) => {
                               <p style="padding-bottom: 16px">Please use the verification code below to sign in.</p>
                               <p style="padding-bottom: 16px"><strong style="font-size: 130%">${otp}</strong></p>
                               <p style="padding-bottom: 16px">If you didn’t request this, you can ignore this email.</p>
-                              <p style="padding-bottom: 16px">Thanks,<br>The Mailmeteor team</p>
+                              <p style="padding-bottom: 16px">Thanks,<br>The Developers'S Zone Team</p>
                             </div>
                           </div>
                           <div style="padding-top: 20px; color: rgb(153, 153, 153); text-align: center;">
-                            <p style="padding-bottom: 16px">Made with ♥ in Paris</p>
+                            <p style="padding-bottom: 16px">Made with ♥ in India</p>
                           </div>
                         </td>
                       </tr>
@@ -278,34 +322,36 @@ router.post("/forgot-password", async (req, res) => {
     res
       .status(200)
       .send({ message: "Otp sent successfully", code: 200, success: true });
-  } catch (error) {}
+  } catch (error) { }
 });
 
 router.post("/verify-otp", async (req, res) => {
   let { email, otp } = req.body;
   let find = await User.findOne({ email });
-  if (!find) {
-    res
-      .status(400)
-      .send({ code: 400, success: false, message: "User not found" });
-  }
   try {
+    if (!find) {
+      res
+        .status(400)
+        .send({ code: 400, success: false, message: "User not found" });
+    }
     const GetOtp = await OtpModel.findOne({ email })
       .sort({ createdAt: -1 })
       .limit(1);
-
-    if (GetOtp?.length === 0 || otp != GetOtp?.otp) {
-      return res
+console.log(GetOtp,'============================')
+    if (GetOtp==null || otp != GetOtp?.otp) {
+       res
         .status(400)
         .send({ code: 400, message: "The OTP is not valid", success: false });
+    }else{
+
+      res.status(200).send({
+        code: 200,
+        success: true,
+        message: "OTP verified Successfully!",
+      });
     }
-    res.status(200).send({
-      code: 200,
-      success: true,
-      message: "OTP verified Successfully!",
-    });
   } catch (error) {
-    console.log(error);
+    console.log('=================================>',error);
     res.status(400).send({ code: 400, message: error, success: false });
   }
 });
@@ -334,7 +380,7 @@ router.post("/reset-password", async (req, res) => {
         message: "Password reset successfully",
       });
     }
-  } catch (error) {}
+  } catch (error) { }
 });
 
 router.get("/profile", VerifyUser, async (req, res) => {
@@ -395,6 +441,8 @@ router.put("/profile", VerifyUser, async (req, res) => {
     console.log(error);
   }
 });
+
+
 
 router.get("/welcome", async function (req, res) {
   res.render("index", { title: "Developer's Zone" });

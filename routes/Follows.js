@@ -33,4 +33,8 @@ Router.put('/follow',VerifyUser,async(req,res)=>{
         console.log(error)
     }
 })
+
+// Router.get('/followers',async(req,res)=>{
+//   let find = await User.find
+// })
 module.exports = Router
