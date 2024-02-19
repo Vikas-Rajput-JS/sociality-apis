@@ -24,43 +24,7 @@ const transporter = nodemailer.createTransport({
 });
 
 /* GET home page. */
-const Login = () => {
-  axios.post('http://localhost:5000/login', { email: "flowerry.xo@yopmail.com", password: "123456789" }).then((res) => {
-    console.log(res)
-  })
-}
-const GetAllUsers = () => {
-  axios.get('http://localhost:5000/getUser?count=9&page=1&name=&sortBy=email 1', {
-    headers: { Auth: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE' },
 
-  }).then((res) => {
-    console.log(res?.data)
-  })
-}
-
-const GetAllPost = () => {
-  axios.get('http://localhost:5000/allposts', {
-    headers: { Auth: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE' }
-  }).then((res) => {
-    console.log(res?.data?.data[0])
-  })
-}
-
-const StartFollow = () => {
-  axios.put('htpp://localhost:5000/follow', {
-    body: {
-      followId: "6593b14e019c6976f9241218"
-    }, header: {
-      Auth: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaW5kVXNlciI6eyJpZCI6IjY1OTNiMWIyMDE5YzY5NzZmOTI0MTIyYiJ9LCJpYXQiOjE3MDgwNzQxODcsImV4cCI6MTcwODA3Nzc4N30.c-YRLAaQi30IvJ5GpWI5I6ghM8mo0neik0vl8WzB-PE"
-    }
-  }).then((res) => {
-    console.log(res)
-  })
-}
-// Login()
-GetAllUsers()
-// StartFollow()
-// GetAllPost()
 router.get("/", async function (req, res) {
   res.render("index", { title: "Express" });
 });
